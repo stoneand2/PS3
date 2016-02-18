@@ -8,7 +8,19 @@ setwd("~/github/PS3") # Setting working directory
 # Define a new class: door. Objects of this class simply take on one numeric value: 
 # 1, 2, or 3 – indicating which door a candidate chooses.
 
-# Function to create a new object (a list) of the class "door"
+## Function for creating a new list object of the class "door"
+#'
+#' This function takes an optional input that is an integer of the value 1, 2, or 3, corresponding to 
+#' a door choice in the Let's Make a Deal game. 
+#' 
+#' @param whichdoor (optional) An integer of the value 1, 2, or 3. If a value is input that is not
+#' one of these values, the function will automatically choose one of the three values for the user.
+#' 
+#' @return A list of the class "door" with the element choice, where choice has one element, equal to 
+#' 1, 2, or 3. 
+#' 
+#' @author Andy Stone.
+
 
 Door_Object <- function(whichdoor=NA){
   if(whichdoor %in% c(1,2,3)){
@@ -43,16 +55,53 @@ Door_Object <- function(whichdoor=NA){
 # wrong door.
 
 
+## Creates a generic function PlayGame.
+#'
+#' This function is the generic for PlayGame methods.  
+#' 
+#' @param x An object input. 
+#' 
+#' @author Andy Stone.
+
 # Creating a generic
 PlayGame <- function(x){
   UseMethod("PlayGame", x)
 }
+
+## Creates a default method for the PlayGame generic. 
+#'
+#' This function is the default method for PlayGame. If no specific method exists for the class of 
+#' the object passed to PlayGame, it will call this function. It will warn the user that no method 
+#' exists for an object of the class passed to the function.
+#' 
+#' @param x An object input. 
+#' 
+#' @return The object passed to the function.
+#' 
+#' @author Andy Stone.
+
 # Backup default method
 PlayGame.default <- function(x){
   print("This object doesn't have an associated PlayGame method. This is the default response.
         Try methods('PlayGame') to see objects with a PlayGame method.")
   return(x)
 }
+
+## Creates a method for the PlayGame generic for objects of the class "door."
+#'
+#' This function creates a PlayGame method for objects of the class "door," allowing the user to play
+#' a simplified version of Let's Make a Deal. The input is an object of the class "door," which
+#' should have the element choice with one element equal to 1, 2, or 3. Such an object can be created 
+#' using the Door_Object() function. The function randomly draws a winning door equal to 1, 2, or 3. It
+#' then checks to see whether the user's choice is equal to the winning door or not. It then reveals
+#' whether the user wins or loses, and prints a web link letting the user know what their prize looks 
+#' like. 
+#' 
+#' @param x A list object of the class "door."
+#' 
+#' @author Andy Stone.
+
+
 # The method for door objects 
 PlayGame.door <- function(x){
   print("This is a door object! Let's figure out if you won or lost.")
