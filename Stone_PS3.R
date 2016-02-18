@@ -4,7 +4,7 @@
 
 setwd("~/github/PS3") # Setting working directory
 
-#### Problem 1 ####
+#### Problem 1 (S3) ####
 # Define a new class: door. Objects of this class simply take on one numeric value: 
 # 1, 2, or 3 – indicating which door a candidate chooses.
 
@@ -32,7 +32,7 @@ Door_Object <- function(whichdoor=NA){
 # class(object.door)
 
 
-#### Problem 2 #### 
+#### Problem 2 (S3) #### 
 # Create a method for door objects that is called PlayGame. 
 # This method is supposed to do the following:
 
@@ -81,6 +81,25 @@ PlayGame.door <- function(x){
     print("Visit https://tinyurl.com/yourZONK to view your prize.") 
   }
 }
+
+
+#### Problem 1 (S4) ####
+
+door <- setClass(Class="door", slots = c(doorchoice = "numeric"),
+                  validity=function(object){
+                    if((object@doorchoice %in% c(1,2,3)) == FALSE) {
+                      return("A door choice not equal to the numeric 1, 2, or 3 was given.")
+                    }
+                  return(TRUE)
+                }
+)
+
+# door(doorchoice=1) # works
+# door(doorchoice=4) # validity check determines not a valid door choice
+
+
+
+
 
 
 
