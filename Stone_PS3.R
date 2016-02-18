@@ -8,9 +8,6 @@ setwd("~/github/PS3") # Setting working directory
 # Define a new class: door. Objects of this class simply take on one numeric value: 
 # 1, 2, or 3 – indicating which door a candidate chooses.
 
-doorchoice <- list(choice=) # creating list
-class(doorchoice) <- "door" # making our list of class "door"
-
 # Function to create a new object (a list) of the class "door"
 
 Door_Object <- function(whichdoor=NA){
@@ -108,6 +105,48 @@ door <- setClass(Class="door", slots = c(doorchoice = "numeric"),
 # test.door <- door(doorchoice=1)
 # test.door@doorchoice <- 6 
 # test.door <- door(doorchoice=3)
+
+
+setGeneric(name="PlayGame", 
+           def=function(x){
+             standardGeneric("PlayGame")
+             }
+)
+
+setMethod(f="PlayGame",
+          signature="door",
+          definition=function(x)
+          {
+            validObject(x)
+            print("This is a door object! Let's figure out if you won or lost.")
+            winning.door <- sample(c(1,2,3), 1)
+            if(winning.door == x@doorchoice){
+              print(paste("Remember, you chose door number ", x@doorchoice, ".", sep=""))
+              print("Unveiling door....")
+              Sys.sleep(1)
+              print("....")
+              Sys.sleep(1)
+              print(paste("The winning door is door number ", winning.door,".", sep=""))
+              print("Yay! You win the car!") 
+              print("Visit https://tinyurl.com/winningcar to view your prize.")
+            }
+            else{
+              print(paste("Remember, you chose door number ", x@doorchoice, ".", sep=""))
+              print("Unveiling door....")
+              Sys.sleep(1)
+              print("....")
+              Sys.sleep(1)
+              print(paste("The winning door is door number ", winning.door, ".", sep=""))
+              print("Sorry. You didn't choose the winning door. You got a ZONK!")
+              print("Visit https://tinyurl.com/yourZONK to view your prize.") 
+            }
+          }
+)
+
+test.door <- door(doorchoice=3)
+test.door@doorchoice <- 6
+
+PlayGame(test.door)
 
 
 
