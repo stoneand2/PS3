@@ -97,9 +97,17 @@ door <- setClass(Class="door", slots = c(doorchoice = "numeric"),
 # door(doorchoice=1) # works
 # door(doorchoice=4) # validity check determines not a valid door choice
 
+# # Validity function to make sure any changes to object of door class are okay
+# setValidity("door", function(object){
+#   if((object@doorchoice %in% c(1,2,3)) == FALSE) {
+#     return("A door choice not equal to the numeric 1, 2, or 3 was given.")
+#   }
+# }
+# )
 
-
-
+# test.door <- door(doorchoice=1)
+# test.door@doorchoice <- 6 
+# test.door <- door(doorchoice=3)
 
 
 
