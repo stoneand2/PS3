@@ -5,13 +5,12 @@
 setwd("~/github/PS3") # Setting working directory
 
 #### Problem 1 (S3) ####
-# Define a new class: door. Objects of this class simply take on one numeric value: 
-# 1, 2, or 3 – indicating which door a candidate chooses.
 
 ## Function for creating a new list object of the class "door"
 #'
 #' This function takes an optional input that is an integer of the value 1, 2, or 3, corresponding to 
-#' a door choice in the Let's Make a Deal game. 
+#' a door choice in the Let's Make a Deal game. If such an integer is not input, one will be assigned.
+#' A list of the class "door" is returned. 
 #' 
 #' @param whichdoor (optional) An integer of the value 1, 2, or 3. If a value is input that is not
 #' one of these values, the function will automatically choose one of the three values for the user.
@@ -55,7 +54,7 @@ Door_Object <- function(whichdoor=NA){
 # wrong door.
 
 
-## Creates a generic function PlayGame.
+## This function creates the generic function PlayGame.
 #'
 #' This function is the generic for PlayGame methods.  
 #' 
@@ -63,8 +62,8 @@ Door_Object <- function(whichdoor=NA){
 #' 
 #' @author Andy Stone.
 
-# Creating a generic
 PlayGame <- function(x){
+  # UseMethod() tells the R system to search for the method associated with the class of object iput
   UseMethod("PlayGame", x)
 }
 
@@ -72,7 +71,7 @@ PlayGame <- function(x){
 #'
 #' This function is the default method for PlayGame. If no specific method exists for the class of 
 #' the object passed to PlayGame, it will call this function. It will warn the user that no method 
-#' exists for an object of the class passed to the function.
+#' exists for an object of the class passed to the function and return the input as it was input. 
 #' 
 #' @param x An object input. 
 #' 
@@ -82,8 +81,8 @@ PlayGame <- function(x){
 
 # Backup default method
 PlayGame.default <- function(x){
-  print("This object doesn't have an associated PlayGame method. This is the default response.
-        Try methods('PlayGame') to see objects with a PlayGame method.")
+  print("This object doesn't have an associated PlayGame method. This is the default response.")
+  print("Try methods('PlayGame') to see objects with a PlayGame method.")
   return(x)
 }
 
@@ -92,10 +91,10 @@ PlayGame.default <- function(x){
 #' This function creates a PlayGame method for objects of the class "door," allowing the user to play
 #' a simplified version of Let's Make a Deal. The input is an object of the class "door," which
 #' should have the element choice with one element equal to 1, 2, or 3. Such an object can be created 
-#' using the Door_Object() function. The function randomly draws a winning door equal to 1, 2, or 3. It
-#' then checks to see whether the user's choice is equal to the winning door or not. It then reveals
-#' whether the user wins or loses, and prints a web link letting the user know what their prize looks 
-#' like. 
+#' using the Door_Object() function. The function randomly draws a winning door equal to 1, 2, or 3. 
+#' It then checks to see whether the user's choice is equal to the winning door or not. It then 
+#' dramatically reveals whether the user wins or loses, and prints a web link letting the user know 
+#' what their prize looks like. 
 #' 
 #' @param x A list object of the class "door."
 #' 
@@ -104,11 +103,14 @@ PlayGame.default <- function(x){
 
 # The method for door objects 
 PlayGame.door <- function(x){
-  print("This is a door object! Let's figure out if you won or lost.")
+  print("Let's figure out if you won or lost.")
+  # Randomly sampling the winning door
   winning.door <- sample(c(1,2,3), 1)
+  # If/else statement to determine if the user's choice was the winner or loser
   if(winning.door == x$choice){
     print(paste("Remember, you chose door number ", x$choice, ".", sep=""))
     print("Unveiling door....")
+    # Pausing for a few seconds to make the reveal more dramatic 
     Sys.sleep(1)
     print("....")
     Sys.sleep(1)
@@ -119,6 +121,7 @@ PlayGame.door <- function(x){
   else{
     print(paste("Remember, you chose door number ", x$choice, ".", sep=""))
     print("Unveiling door....")
+    # Pausing for a few seconds to make the reveal more dramatic
     Sys.sleep(1)
     print("....")
     Sys.sleep(1)
@@ -131,6 +134,21 @@ PlayGame.door <- function(x){
 
 #### Problem 1 (S4) ####
 
+## Function that allows the user to create an object of the class "door."
+#'
+#' This function allows the user to create a "door" object. The function door() has one data element,
+#' defined by the slot, which is doorchoice. The user is required to specify the choice when running
+#' the function using doorchoice=X. The doorchoice is numeric, and is restricted to be equal
+#' to 1, 2, or 3. The restriction is ensured by the validity argument. It is important to note that 
+#' this validity check IS NOT automatically applied if the user later modifies the slots of the "door"
+#' object directly (see Hadley, http://adv-r.had.co.nz/S4.html). However, this can be dealt with by
+#' checking the validity using validObject() within any function that this object is passed to. This 
+#' is the strategy I employ below.
+#' 
+#' @return x An object of the class "door."
+#' 
+#' @author Andy Stone.
+
 door <- setClass(Class="door", slots = c(doorchoice = "numeric"),
                   validity=function(object){
                     if((object@doorchoice %in% c(1,2,3)) == FALSE) {
@@ -140,10 +158,15 @@ door <- setClass(Class="door", slots = c(doorchoice = "numeric"),
                 }
 )
 
-# door(doorchoice=1) # works
+# ourchoice <- door(doorchoice=1) # works, creates object of class "door" 
 # door(doorchoice=4) # validity check determines not a valid door choice
 
-# # Validity function to make sure any changes to object of door class are okay
+# As noted, we CAN assign invalid value to slot if we do it directly after creating object:
+# ourchoice@doorchoice <- 6
+# BUT, we will deal with this below by not allowing the PlayGame method to run with an invalid
+# number assigned to the element
+
+# # This is an alternative way of specifying the validity argument, just oustide of setClass 
 # setValidity("door", function(object){
 #   if((object@doorchoice %in% c(1,2,3)) == FALSE) {
 #     return("A door choice not equal to the numeric 1, 2, or 3 was given.")
@@ -151,24 +174,49 @@ door <- setClass(Class="door", slots = c(doorchoice = "numeric"),
 # }
 # )
 
-# test.door <- door(doorchoice=1)
-# test.door@doorchoice <- 6 
-# test.door <- door(doorchoice=3)
-
+## This function creates the generic function PlayGame.
+#'
+#' This function is the generic for PlayGame methods.  
+#' 
+#' @param x An object input. 
+#' 
+#' @author Andy Stone.
 
 setGeneric(name="PlayGame", 
            def=function(x){
+             # Initiates dispatch of the S4 method
              standardGeneric("PlayGame")
              }
 )
 
+## This function creates the method PlayGame for objects of "door" class.
+#'
+#' This function creates a PlayGame method for objects of the class "door," allowing the user to play
+#' a simplified version of Let's Make a Deal. The input is an object of the class "door," which
+#' should have the element choice with one element equal to 1, 2, or 3. The method carries out a
+#' validity check with the validObject(x) function, which calls the validity argument of the setClass
+#' function defined above to ensure the door value is equal to 1, 2, or 3. If it is invalid, the 
+#' function breaks and returns the message defined in setClass above. If it is valid, the function 
+#' randomly draws a winning door equal to 1, 2, or 3. It then checks to see whether the user's choice
+#' is equal to the winning door or not. It then dramatically reveals whether the user wins or loses,
+#' and prints a web link letting the user know what their prize looks like. 
+#' 
+#' @param x An object of the class "door."
+#' 
+#' @author Andy Stone.
+
 setMethod(f="PlayGame",
+          # Class the method is used for
           signature="door",
+          # The method itself
           definition=function(x)
           {
+            # Forcing the validity check
             validObject(x)
             print("This is a door object! Let's figure out if you won or lost.")
+            # Randomly sampling winning door
             winning.door <- sample(c(1,2,3), 1)
+            # If/else statement to check if user's choice is winner or loser
             if(winning.door == x@doorchoice){
               print(paste("Remember, you chose door number ", x@doorchoice, ".", sep=""))
               print("Unveiling door....")
@@ -192,10 +240,12 @@ setMethod(f="PlayGame",
           }
 )
 
-test.door <- door(doorchoice=3)
-test.door@doorchoice <- 6
+# This will work:
+# newdoor <- door(doorchoice=3)
+# PlayGame(newdoor)
 
-PlayGame(test.door)
+# This will not work, because we have an invalid element assigned to the doorchoice slot:
+# PlayGame(ourchoice)
 
 
 
