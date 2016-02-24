@@ -139,11 +139,14 @@ PlayGame.door <- function(x){
 #' This function allows the user to create a "door" object. The function door() has one data element,
 #' defined by the slot, which is doorchoice. The user is required to specify the choice when running
 #' the function using doorchoice=X. The doorchoice is numeric, and is restricted to be equal
-#' to 1, 2, or 3. The restriction is ensured by the validity argument. It is important to note that 
-#' this validity check IS NOT automatically applied if the user later modifies the slots of the "door"
-#' object directly (see Hadley, http://adv-r.had.co.nz/S4.html). However, this can be dealt with by
-#' checking the validity using validObject() within any function that this object is passed to. This 
-#' is the strategy I employ below.
+#' to 1, 2, or 3. The restriction is ensured by the validity argument. If a value is passed that is 
+#' not doorchoice=1, 2, or 3, the function will break. If no argument is passed, there will be no
+#' doorchoice assigned.
+#' 
+#' It is important to note that this validity check IS NOT automatically applied if the user later 
+#' modifies the slots of the "door" object directly (see Hadley, http://adv-r.had.co.nz/S4.html). 
+#' However, this can be dealt with by checking the validity using validObject() within any function 
+#' that this object is passed to. This is the strategy I employ below.
 #' 
 #' @return x An object of the class "door."
 #' 
